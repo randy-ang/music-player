@@ -17,7 +17,7 @@ export default function MusicPlayer({display, onPrev, onNext, musicInfo}) {
   const {previewUrl: audioUrl, trackName, artistName} = musicInfo;
 
   useEffect(() => {
-    // no need to show snackbar
+    // no need to show snackbar, because it is not a blocker for user
     SystemSetting.getVolume()
       .then(setVolume)
       .catch(err => {
@@ -94,6 +94,7 @@ export default function MusicPlayer({display, onPrev, onNext, musicInfo}) {
       </View>
       <View style={MusicPlayerStyles.controls}>
         <Icon
+          testID="prevBtn"
           style={MusicPlayerStyles.control}
           name="backward"
           backgroundColor="#3b5998"
@@ -101,6 +102,7 @@ export default function MusicPlayer({display, onPrev, onNext, musicInfo}) {
           size={24}
         />
         <Icon
+          testID="pausePlayBtn"
           style={MusicPlayerStyles.control}
           name={isPlaying ? 'pause' : 'play'}
           backgroundColor="#3b5998"
@@ -108,6 +110,7 @@ export default function MusicPlayer({display, onPrev, onNext, musicInfo}) {
           size={24}
         />
         <Icon
+          testID="nextBtn"
           style={MusicPlayerStyles.control}
           name="forward"
           backgroundColor="#3b5998"
