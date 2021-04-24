@@ -2,9 +2,14 @@ import React from 'react';
 import {node} from 'prop-types';
 
 import MusicPlayerProvider from './musicPlayer';
+import SnackbarProvider from './snackbar';
 
 function ContextProvider({children}) {
-  return <MusicPlayerProvider>{children}</MusicPlayerProvider>;
+  return (
+    <SnackbarProvider>
+      <MusicPlayerProvider>{children}</MusicPlayerProvider>
+    </SnackbarProvider>
+  );
 }
 
 ContextProvider.propTypes = {
