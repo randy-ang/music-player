@@ -17,9 +17,10 @@ const defaultOptions = {
 export const useMusicPlayer = () => useContext(MusicPlayerContext);
 
 export default function MusicPlayerProvider({children}) {
-  const [{display, musicList, trackNo}, setMusicPlayerOptions] = useState(
-    defaultOptions,
-  );
+  const [
+    {musicList, trackNo, ...musicPlayerOptions},
+    setMusicPlayerOptions,
+  ] = useState(defaultOptions);
 
   const musicInfo = musicList[trackNo] || {};
 
@@ -69,7 +70,7 @@ export default function MusicPlayerProvider({children}) {
     <MusicPlayerContext.Provider value={value}>
       {children}
       <MusicPlayer
-        display={display}
+        {...musicPlayerOptions}
         musicInfo={musicInfo}
         onNext={playNext}
         onPrev={playPrev}
