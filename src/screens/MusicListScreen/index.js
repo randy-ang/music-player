@@ -1,6 +1,4 @@
-import {object} from 'prop-types';
-import React from 'react';
-import {useState} from 'react';
+import React, {useState} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -15,29 +13,12 @@ import {useMusicPlayer} from '../../context/musicPlayer';
 import {useSnackbar} from '../../context/snackbar';
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
   textfield: {
     color: 'white',
   },
   loader: {
     position: 'absolute',
   },
-  loaderContainer: {},
   hidden: {
     display: 'none',
   },
@@ -46,14 +27,13 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function MusicListScreen({navigation}) {
+export default function MusicListScreen() {
   const [musicList, setMusicLists] = useState([]);
   const [searchedValue, setSearchedValue] = useState('');
   const [loading, setLoading] = useState(true);
 
   const {playMusic, currentTrackId} = useMusicPlayer();
   const {showSnackbar} = useSnackbar();
-
   const searchMusic = () => {
     var url = new URL('https://itunes.apple.com/search'),
       params = {country: 'ID', term: searchedValue, media: 'music'};
@@ -82,6 +62,7 @@ export default function MusicListScreen({navigation}) {
     <SafeAreaView>
       <Appbar style={styles.barStyle}>
         <TextInput
+          testID="searchBar"
           placeholder="Search..."
           placeholderTextColor="white"
           style={styles.textfield}
@@ -110,7 +91,3 @@ export default function MusicListScreen({navigation}) {
     </SafeAreaView>
   );
 }
-
-MusicListScreen.propTypes = {
-  navigation: object.isRequired,
-};
