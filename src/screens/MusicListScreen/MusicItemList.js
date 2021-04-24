@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
 // TODO: adaptive image
 export default function Music({
   index,
-  item: {artistName, artworkUrl30, collectionName, trackName},
+  item: {artistName, artworkUrl60, collectionName, trackName},
   playMusic,
   isPlaying,
 }) {
@@ -36,7 +36,7 @@ export default function Music({
       <Image
         style={styles.logo}
         source={{
-          uri: artworkUrl30,
+          uri: artworkUrl60,
         }}
         height={48}
         width={48}
