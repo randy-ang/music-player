@@ -17,17 +17,19 @@ describe('test music item', () => {
   } = require('expo-av');
   const {default: MusicPlayer} = require('../MusicPlayer');
   const musicInfo = mockMusicListResponse().results[0];
-  const onPrev = jest.fn();
-  const onNext = jest.fn();
   const defaultFnProps = {
-    onPrev,
-    onNext,
+    onPrev: jest.fn(),
+    onNext: jest.fn(),
+    pausePlay: jest.fn(),
+    setIsPlaying: jest.fn(),
   };
 
   const defaultProps = {
     ...defaultFnProps,
     musicInfo,
     display: true,
+    parentPlay: true,
+    isPlaying: true,
   };
 
   beforeAll(() => {
@@ -71,7 +73,7 @@ describe('test music item', () => {
       await waitFor(() => {
         const prevIconBtn = getByTestId('prevBtn');
         fireEvent.press(prevIconBtn);
-        expect(onPrev).toHaveBeenCalled();
+        expect(defaultProps.onPrev).toHaveBeenCalled();
       });
     });
 
@@ -80,7 +82,7 @@ describe('test music item', () => {
       await waitFor(() => {
         const nextIconBtn = getByTestId('nextBtn');
         fireEvent.press(nextIconBtn);
-        expect(onNext).toHaveBeenCalled();
+        expect(defaultProps.onNext).toHaveBeenCalled();
       });
     });
 
@@ -95,7 +97,7 @@ describe('test music item', () => {
       await waitFor(() => {
         const pausePlayIconBtn = getByTestId('pausePlayBtn');
         fireEvent.press(pausePlayIconBtn);
-        expect(mockSound.playAsync).toHaveBeenCalledTimes(2);
+        expect(defaultProps.pausePlay).toHaveBeenCalledTimes(2);
       });
     });
   });
