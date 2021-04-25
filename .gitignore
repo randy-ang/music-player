@@ -19,3 +19,8 @@ doc/api/
 *.js_
 *.js.deps
 *.js.map
+node_modules
+coverage
+node_modules
+android/.gradle/**
+android/.idea/**
