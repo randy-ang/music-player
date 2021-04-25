@@ -18,15 +18,12 @@ There are also some extra functionalities, such as:
 ```sh
 music-player/
 ├── android
-        ├── app.src.main.java.com.         # global contexts
-        ├── screens         # screens
-        └── utils           # helpers
-        └── App.js              # All services pre-made environment config
-└── src                     # Sources of Project
-        ├── context         # global contexts
-        ├── screens         # screens
-        └── utils           # helpers
-        └── App.js          # main app
+        ├── app.src.main.java.com.musicplayer.audiovisualizer   # Audio Visualizer package
+└── src
+        ├── context                                             # global contexts
+        ├── screens                                             # screens
+        └── utils                                               # helpers
+        └── App.js                                              # main app
 ```
 
 ## Requirements
