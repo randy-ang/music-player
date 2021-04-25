@@ -4,14 +4,23 @@ import noop from '../../utils/noop';
 import MusicPlayer from './MusicPlayer';
 
 export const MusicPlayerContext = createContext({
-  playMusic: noop,
+  setPlaylistAndPlay: noop,
   currentTrackId: undefined,
 });
 
 const defaultOptions = {
-  display: true,
+  display: false,
   musicList: [],
   trackNo: undefined,
+  isPlaying: false,
+  /**
+   * flag to determine whether audio will be played by this music player
+   *
+   * created because visualizers needed audio, so there is no point in having
+   * two audio files being played at the same time.
+   * other music state will work the same either way
+   */
+  parentPlay: false,
 };
 
 export const useMusicPlayer = () => useContext(MusicPlayerContext);
@@ -22,16 +31,33 @@ export default function MusicPlayerProvider({children}) {
     setMusicPlayerOptions,
   ] = useState(defaultOptions);
 
+  const {isPlaying} = musicPlayerOptions;
+
   const musicInfo = musicList[trackNo] || {};
 
   const {trackId} = musicInfo;
 
-  const playMusic = useCallback((newMusicList, trackIndex) => {
+  const setPlaylistAndPlay = useCallback((newMusicList, trackIndex) => {
     setMusicPlayerOptions({
       display: true,
       musicList: newMusicList,
       trackNo: trackIndex,
+      isPlaying: true,
     });
+  }, []);
+
+  const setIsPlaying = useCallback(newPlayingState => {
+    setMusicPlayerOptions(musicOptions => ({
+      ...musicOptions,
+      isPlaying: newPlayingState,
+    }));
+  }, []);
+
+  const pausePlay = useCallback(() => {
+    setMusicPlayerOptions(({isPlaying: playingState, ...musicOptions}) => ({
+      ...musicOptions,
+      isPlaying: !playingState,
+    }));
   }, []);
 
   const playNext = useCallback(() => {
@@ -45,6 +71,7 @@ export default function MusicPlayerProvider({children}) {
       return {
         ...musicOptions,
         trackNo: newTrackNo,
+        isPlaying: true,
       };
     });
   }, []);
@@ -60,12 +87,12 @@ export default function MusicPlayerProvider({children}) {
       return {
         ...musicOptions,
         trackNo: newTrackNo,
+        isPlaying: true,
       };
     });
   }, []);
 
-  const value = {playMusic, currentTrackId: trackId};
-
+  const value = {setPlaylistAndPlay, currentTrackId: trackId, isPlaying};
   return (
     <MusicPlayerContext.Provider value={value}>
       {children}
@@ -74,6 +101,8 @@ export default function MusicPlayerProvider({children}) {
         musicInfo={musicInfo}
         onNext={playNext}
         onPrev={playPrev}
+        pausePlay={pausePlay}
+        setIsPlaying={setIsPlaying}
       />
     </MusicPlayerContext.Provider>
   );

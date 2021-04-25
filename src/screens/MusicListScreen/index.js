@@ -30,9 +30,8 @@ const styles = StyleSheet.create({
 export default function MusicListScreen() {
   const [musicList, setMusicLists] = useState([]);
   const [searchedValue, setSearchedValue] = useState('');
-  const [loading, setLoading] = useState(true);
 
-  const {playMusic, currentTrackId} = useMusicPlayer();
+  const {setPlaylistAndPlay, currentTrackId, isPlaying} = useMusicPlayer();
   const {showSnackbar} = useSnackbar();
   const searchMusic = () => {
     var url = new URL('https://itunes.apple.com/search'),
@@ -40,7 +39,6 @@ export default function MusicListScreen() {
     Object.keys(params).forEach(key =>
       url.searchParams.append(key, params[key]),
     );
-    setLoading(true);
     fetch(url)
       .then(res => res.json())
       .then(({results}) => {
@@ -48,14 +46,11 @@ export default function MusicListScreen() {
       })
       .catch(err => {
         showSnackbar('Failed to get music with error: ' + err.message);
-      })
-      .finally(() => {
-        setLoading(false);
       });
   };
 
   const playChosenMusic = trackNo => {
-    playMusic(musicList, trackNo);
+    setPlaylistAndPlay(musicList, trackNo);
   };
 
   return (
@@ -71,18 +66,13 @@ export default function MusicListScreen() {
           onBlur={searchMusic}
         />
       </Appbar>
-      <ActivityIndicator
-        animating={loading}
-        size="large"
-        color="#00ff00"
-        style={[styles.loader, !loading && styles.hidden]}
-      />
       <FlatList
         data={musicList}
         renderItem={musicProps => (
           <MusicItemList
             {...musicProps}
             playMusic={playChosenMusic}
+            playingState={isPlaying}
             isPlaying={musicProps.item.trackId === currentTrackId}
           />
         )}

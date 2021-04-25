@@ -8,9 +8,17 @@ import {MusicPlayerStyles} from './styles';
 import Slider from '@react-native-community/slider';
 import {useSnackbar} from '../snackbar';
 
-export default function MusicPlayer({display, onPrev, onNext, musicInfo}) {
+export default function MusicPlayer({
+  display,
+  onPrev,
+  onNext,
+  musicInfo,
+  parentPlay,
+  isPlaying,
+  pausePlay,
+  setIsPlaying,
+}) {
   const [music, setMusic] = useState();
-  const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState();
   const {showSnackbar} = useSnackbar();
 
@@ -36,7 +44,8 @@ export default function MusicPlayer({display, onPrev, onNext, musicInfo}) {
   };
 
   useEffect(() => {
-    if (audioUrl) {
+    // no need to create audio if visualizers are used by child
+    if (parentPlay && audioUrl) {
       Audio.Sound.createAsync({uri: audioUrl})
         .then(({sound}) => setMusic(sound))
         .catch(err => {
@@ -44,9 +53,10 @@ export default function MusicPlayer({display, onPrev, onNext, musicInfo}) {
           console.error('failed to generate preview:', err);
         });
     }
-  }, [audioUrl, showSnackbar]);
+  }, [audioUrl, showSnackbar, parentPlay]);
 
   const handlePlayPause = async () => {
+    pausePlay();
     if (music) {
       const action = isPlaying ? 'pausing' : 'playing';
       try {
@@ -55,7 +65,6 @@ export default function MusicPlayer({display, onPrev, onNext, musicInfo}) {
         } else {
           await music.playAsync();
         }
-        setIsPlaying(playingState => !playingState);
       } catch (err) {
         showSnackbar(`error ${action}: ` + err.message);
         console.error('error playing/pausing', err);
@@ -79,7 +88,7 @@ export default function MusicPlayer({display, onPrev, onNext, musicInfo}) {
 
       return () => music.unloadAsync();
     }
-  }, [music, onNext]);
+  }, [music, onNext, parentPlay, setIsPlaying]);
 
   return (
     <View
