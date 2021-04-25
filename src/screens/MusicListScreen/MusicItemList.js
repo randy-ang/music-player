@@ -58,6 +58,7 @@ export default function Music({
   playMusic,
   isPlaying,
   playingState,
+  hasPermission,
 }) {
   return (
     <TouchableOpacity
@@ -81,7 +82,7 @@ export default function Music({
         </View>
       </View>
       <View>
-        {isPlaying && (
+        {hasPermission && isPlaying && (
           <AudioVisualizer
             style={styles.waveform}
             src={previewUrl}

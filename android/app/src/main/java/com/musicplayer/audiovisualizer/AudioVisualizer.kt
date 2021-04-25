@@ -26,22 +26,9 @@ class AudioVisualizer: SimpleViewManager<SquareBarVisualizer>() {
         return SquareBarVisualizer(reactContext)
     }
 
-//    private fun onEnd(session: Session) {
-//        // Create map for params
-//        val payload: WritableMap = Arguments.createMap()
-//        // Put data to map
-//        payload.putString("sessionId", session.getSessionId())
-//        // Get EventEmitter from context and send event thanks to it
-//        this.reactContext
-//                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
-//                .emit("onSessionConnect", params)
-//    }
-
     @ReactProp(name="play")
     public fun playVisualizer(visualizer: SquareBarVisualizer, play: Boolean?) {
-        Log.i("visualizer", "play: $play")
         if(play != null && mediaPlayer != null) {
-            Log.i("visualizer", "isPlaying: " + mediaPlayer!!.isPlaying)
             if(play && !mediaPlayer!!.isPlaying) {
                 mediaPlayer!!.start()
                 return
@@ -67,7 +54,6 @@ class AudioVisualizer: SimpleViewManager<SquareBarVisualizer>() {
             mediaPlayer!!.prepare()
         }
 
-        // we want to control audio from 1 place
         mediaPlayer!!.start()
         visualizer.setPlayer(mediaPlayer!!.audioSessionId)
     }

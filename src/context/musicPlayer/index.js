@@ -37,14 +37,18 @@ export default function MusicPlayerProvider({children}) {
 
   const {trackId} = musicInfo;
 
-  const setPlaylistAndPlay = useCallback((newMusicList, trackIndex) => {
-    setMusicPlayerOptions({
-      display: true,
-      musicList: newMusicList,
-      trackNo: trackIndex,
-      isPlaying: true,
-    });
-  }, []);
+  const setPlaylistAndPlay = useCallback(
+    (newMusicList, trackIndex, options) => {
+      setMusicPlayerOptions({
+        ...options,
+        display: true,
+        musicList: newMusicList,
+        trackNo: trackIndex,
+        isPlaying: true,
+      });
+    },
+    [],
+  );
 
   const setIsPlaying = useCallback(newPlayingState => {
     setMusicPlayerOptions(musicOptions => ({

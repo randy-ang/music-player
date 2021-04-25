@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
-  ActivityIndicator,
+  PermissionsAndroid,
   TextInput,
   FlatList,
 } from 'react-native';
@@ -30,9 +30,38 @@ const styles = StyleSheet.create({
 export default function MusicListScreen() {
   const [musicList, setMusicLists] = useState([]);
   const [searchedValue, setSearchedValue] = useState('');
+  const [hasMicrophonePermission, setMicrophonePermission] = useState(false);
+  const {showSnackbar} = useSnackbar();
+
+  useEffect(() => {
+    // TODO: move to context
+    PermissionsAndroid.requestMultiple(
+      [
+        'android.permission.MODIFY_AUDIO_SETTINGS',
+        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+      ],
+      {
+        title: 'Audio Visualizer',
+        message:
+          'Music Player app needs access to your microphone for audio visualizer',
+        buttonNeutral: 'Ask Me Later',
+        buttonNegative: 'Cancel',
+        buttonPositive: 'OK',
+      },
+    ).then(grantedResults => {
+      // if any permission is not granted, then considered not granted
+      const isGranted = !Object.values(grantedResults).filter(
+        grantedResult => grantedResult !== PermissionsAndroid.RESULTS.GRANTED,
+      ).length;
+      if (!isGranted) {
+        showSnackbar('Visualizer will not be displayed');
+      }
+      setMicrophonePermission(isGranted);
+    });
+  }, [showSnackbar]);
 
   const {setPlaylistAndPlay, currentTrackId, isPlaying} = useMusicPlayer();
-  const {showSnackbar} = useSnackbar();
+
   const searchMusic = () => {
     var url = new URL('https://itunes.apple.com/search'),
       params = {country: 'ID', term: searchedValue, media: 'music'};
@@ -50,7 +79,9 @@ export default function MusicListScreen() {
   };
 
   const playChosenMusic = trackNo => {
-    setPlaylistAndPlay(musicList, trackNo);
+    setPlaylistAndPlay(musicList, trackNo, {
+      parentPlay: !hasMicrophonePermission,
+    });
   };
 
   return (
@@ -74,6 +105,7 @@ export default function MusicListScreen() {
             playMusic={playChosenMusic}
             playingState={isPlaying}
             isPlaying={musicProps.item.trackId === currentTrackId}
+            hasPermission={hasMicrophonePermission}
           />
         )}
         keyExtractor={({trackId}) => trackId}
