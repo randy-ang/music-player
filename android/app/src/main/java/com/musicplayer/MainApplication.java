@@ -10,13 +10,13 @@ import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import com.musicplayer.generated.BasePackageList;
+import com.musicplayer.audiovisualizer.AudioVisualizerPackage;
 
 import java.util.Arrays;
  
 import org.unimodules.adapters.react.ModuleRegistryAdapter;
 import org.unimodules.adapters.react.ReactModuleRegistryProvider;
-import org.unimodules.core.interfaces.SingletonModule;
- 
+
 import java.util.List;
 
 public class MainApplication extends Application implements ReactApplication {
@@ -39,6 +39,7 @@ public class MainApplication extends Application implements ReactApplication {
             new ModuleRegistryAdapter(mModuleRegistryProvider)
           );
           packages.addAll(unimodules);
+          packages.add(new AudioVisualizerPackage());
           return packages;
         }
 
